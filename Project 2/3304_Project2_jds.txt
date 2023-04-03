@@ -1,0 +1,919 @@
+SQL> 
+SQL> 
+SQL> /*Joan Sanchez
+SQL> 3304-001
+SQL> Project 2
+SQL> */
+SQL> 
+SQL> 
+SQL> --DROP all the tables ***in the opposite order** they're being created.
+SQL> 
+SQL> DROP TABLE ORDERDETAIL_jds;
+
+Table dropped.
+
+SQL> DROP TABLE ORDER_jds;
+
+Table dropped.
+
+SQL> DROP TABLE CUSTOMER_jds;
+
+Table dropped.
+
+SQL> DROP TABLE SALESREP_jds;
+
+Table dropped.
+
+SQL> DROP TABLE PRODUCT_jds;
+
+Table dropped.
+
+SQL> DROP TABLE DEPARTMENT_jds;
+
+Table dropped.
+
+SQL> DROP TABLE COMMISSION_jds;
+
+Table dropped.
+
+SQL> DROP TABLE PRODCAT_jds;
+
+Table dropped.
+
+SQL> 
+SQL> 
+SQL> -- IA.  Create table
+SQL> CREATE TABLE PRODCAT_jds(
+  2  ProdCatID		     NUMBER(1)		     NOT NULL,
+  3  ProdCatName	     VARCHAR(20)	     NOT NULL,
+  4  PRIMARY KEY (ProdCatID)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE COMMISSION_jds(
+  2  CommClass		     CHAR(1)		     NOT NULL,
+  3  CommRate		     NUMBER(2,2)	     NOT NULL,
+  4  PRIMARY KEY (CommClass)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE DEPARTMENT_jds(
+  2  DeptID		     NUMBER(2)		     NOT NULL,
+  3  DeptName		     VARCHAR(15)	     NOT NULL,
+  4  PRIMARY KEY (DeptID)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> --With foreing keys
+SQL> 
+SQL> 
+SQL> CREATE TABLE PRODUCT_jds(
+  2  ProdID		     NUMBER(3)		     NOT NULL,
+  3  ProdName		     VARCHAR(20)     NOT NULL,
+  4  ProdCatID		     NUMBER(1)		     NOT NULL,
+  5  ProdPrice		     NUMBER(4,2)	     NOT NULL,
+  6  PRIMARY KEY (ProdID),
+  7  FOREIGN KEY (ProdCatID) REFERENCES PRODCAT_jds
+  8  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE SALESREP_jds(
+  2  SalesRepID 	NUMBER(3)	NOT NULL,
+  3  SalesRepFName   	VARCHAR(20)     NOT NULL,
+  4  SalesRepLName      VARCHAR(20)     NOT NULL,
+  5  CommClass		CHAR(1)		NOT NULL,
+  6  DeptID		NUMBER(2)       NOT NULL,
+  7  PRIMARY KEY (SalesRepID),
+  8  FOREIGN KEY (CommClass) REFERENCES COMMISSION_jds,
+  9  FOREIGN KEY (DeptID)     REFERENCES DEPARTMENT_jds
+ 10  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE CUSTOMER_jds(
+  2  CustID		     CHAR(4)		     NOT NULL,
+  3  CustFName		     VARCHAR(10)	     NOT NULL,
+  4  CustLName		     VARCHAR(10)     NOT NULL,
+  5  CustPhone		     CHAR(10),
+  6  SalesRepID 	     NUMBER(3)		     NOT NULL,
+  7  PRIMARY KEY (CustID),
+  8  FOREIGN KEY (SalesRepID) REFERENCES SALESREP_jds
+  9  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE ORDER_jds(
+  2  OrderID	     NUMBER(4)	     NOT NULL,
+  3  OrderDate	     DATE	     NOT NULL,
+  4  CustID	     CHAR(4)	     NOT NULL,
+  5  PRIMARY KEY (OrderID),
+  6  FOREIGN KEY (CustID) REFERENCES CUSTOMER_jds
+  7  );
+
+Table created.
+
+SQL> 
+SQL> --With two primary key that one of them is also a foreing key
+SQL> 
+SQL> CREATE TABLE ORDERDETAIL_jds(
+  2  OrderID	     NUMBER(3)		     NOT NULL,
+  3  ProdID	     NUMBER(3)		     NOT NULL,
+  4  ProdQty	     NUMBER(3)		     NOT NULL,
+  5  ProdPrice	     Number(4,2)	     NOT NULL,
+  6  PRIMARY KEY (OrderID, ProdID),
+  7  FOREIGN KEY (ProdID) REFERENCES PRODUCT_jds,
+  8  FOREIGN KEY (OrderID) REFERENCES ORDER_jds
+  9  );
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> -- IB. Describe the tables
+SQL> --Utility statement
+SQL> DESCRIBE PRODCAT_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PRODCATID                                 NOT NULL NUMBER(1)
+ PRODCATNAME                               NOT NULL VARCHAR2(20)
+
+SQL> DESCRIBE COMMISSION_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ COMMCLASS                                 NOT NULL CHAR(1)
+ COMMRATE                                  NOT NULL NUMBER(2,2)
+
+SQL> DESCRIBE DEPARTMENT_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DEPTID                                    NOT NULL NUMBER(2)
+ DEPTNAME                                  NOT NULL VARCHAR2(15)
+
+SQL> DESCRIBE PRODUCT_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PRODID                                    NOT NULL NUMBER(3)
+ PRODNAME                                  NOT NULL VARCHAR2(20)
+ PRODCATID                                 NOT NULL NUMBER(1)
+ PRODPRICE                                 NOT NULL NUMBER(4,2)
+
+SQL> DESCRIBE SALESREP_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SALESREPID                                NOT NULL NUMBER(3)
+ SALESREPFNAME                             NOT NULL VARCHAR2(20)
+ SALESREPLNAME                             NOT NULL VARCHAR2(20)
+ COMMCLASS                                 NOT NULL CHAR(1)
+ DEPTID                                    NOT NULL NUMBER(2)
+
+SQL> DESCRIBE CUSTOMER_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CUSTID                                    NOT NULL CHAR(4)
+ CUSTFNAME                                 NOT NULL VARCHAR2(10)
+ CUSTLNAME                                 NOT NULL VARCHAR2(10)
+ CUSTPHONE                                          CHAR(10)
+ SALESREPID                                NOT NULL NUMBER(3)
+
+SQL> DESCRIBE ORDER_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ORDERID                                   NOT NULL NUMBER(4)
+ ORDERDATE                                 NOT NULL DATE
+ CUSTID                                    NOT NULL CHAR(4)
+
+SQL> DESCRIBE ORDERDETAIL_jds
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ORDERID                                   NOT NULL NUMBER(3)
+ PRODID                                    NOT NULL NUMBER(3)
+ PRODQTY                                   NOT NULL NUMBER(3)
+ PRODPRICE                                 NOT NULL NUMBER(4,2)
+
+SQL> 
+SQL> 
+SQL> --PartIIA. INSERT all the data from Project 1 into the table
+SQL> 
+SQL> --      INSERT rows into PRODCAT_jds
+SQL> INSERT INTO PRODCAT_jds
+  2  	     VALUES (1, 'Hand Tools');
+
+1 row created.
+
+SQL> INSERT INTO PRODCAT_jds
+  2  	     VALUES (2, 'Power Tools');
+
+1 row created.
+
+SQL> INSERT INTO PRODCAT_jds
+  2  	     VALUES (4, 'Fasteners');
+
+1 row created.
+
+SQL> INSERT INTO PRODCAT_jds
+  2  	     VALUES (6, 'Misc');
+
+1 row created.
+
+SQL> INSERT INTO PRODCAT_jds
+  2  	     VALUES (3, 'Measuring Tool');
+
+1 row created.
+
+SQL> INSERT INTO PRODCAT_jds
+  2  	     VALUES (5, 'Hardware');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> -- INSERT rows into COMMISSION_jds
+SQL> INSERT INTO COMMISSION_jds
+  2  	     VALUES ('A', .01);
+
+1 row created.
+
+SQL> INSERT INTO COMMISSION_jds
+  2  	     VALUES ('B', 0.08);
+
+1 row created.
+
+SQL> INSERT INTO COMMISSION_jds
+  2  	     VALUES ('Z', 0);
+
+1 row created.
+
+SQL> INSERT INTO COMMISSION_jds
+  2  	     VALUES ('C', 0.05);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --INSERT rows into DEPARTMENT_jds
+SQL> INSERT INTO DEPARTMENT_jds
+  2  	     VALUES (10, 'Store Sales');
+
+1 row created.
+
+SQL> INSERT INTO DEPARTMENT_jds
+  2  	     VALUES (14, 'Corp Sales');
+
+1 row created.
+
+SQL> INSERT INTO DEPARTMENT_jds
+  2  	     VALUES (16, 'Web Sales');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --INSERT rows into PRODUCT_jds
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (121, 'BD Hammer', 1,7.00);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (228, 'Makita Power Drill', 2,65.00);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (480, '1# BD Nails', 4,3.00);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (407, '1# BD Screws', 4,4.25);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (610, '3M Duct Tape', 6,1.75);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (618, '3M Masking Tape', 6,1.25);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (380, 'Acme Yard Stick', 3,1.25);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (535, 'Schlage Door Knob', 5,7.50);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (123, 'Acme Pry Bar', 1,5.00);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (124, 'Acme Hammer', 1,6.50);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (229, 'BD Power Drill', 2,59.00);
+
+1 row created.
+
+SQL> INSERT INTO PRODUCT_jds
+  2  	     VALUES (235, 'Makita Power Drill 2', 2,65.00);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --INSERT rows into SALESREP_jds
+SQL> INSERT INTO SALESREP_jds
+  2  	     VALUES (10, 'Alice', 'Jones','A', 10);
+
+1 row created.
+
+SQL> INSERT INTO SALESREP_jds
+  2  	     VALUES (12, 'Greg', 'Taylor','B', 14);
+
+1 row created.
+
+SQL> INSERT INTO SALESREP_jds
+  2  	     VALUES (14, 'Sara', 'Day','Z', 10);
+
+1 row created.
+
+SQL> INSERT INTO SALESREP_jds
+  2  	     VALUES (8, 'Kay', 'Price','C', 14);
+
+1 row created.
+
+SQL> INSERT INTO SALESREP_jds
+  2  	     VALUES (20, 'Bob', 'Jackson','B', 10);
+
+1 row created.
+
+SQL> INSERT INTO SALESREP_jds
+  2  	     VALUES (22, 'Micah', 'Moore','Z', 16);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --INSERT rows into CUSTOMER_jds
+SQL> INSERT INTO CUSTOMER_jds
+  2  	     VALUES ('S100', 'John', 'Smith', 2145551212, 10);
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_jds
+  2  	     VALUES ('A120', 'Renee', 'Adams', 8175553434, 12);
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_jds
+  2  	     VALUES ('J090', 'William', 'Jones', NULL, 14);
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_jds
+  2  	     VALUES ('B200', 'Ann', 'Brown', 9725557979, 8);
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_jds
+  2  	     VALUES ('G070', 'Kate', 'Green', NULL, 20);
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_jds
+  2  	     VALUES ('S120', 'Wesley', 'Sims', 2145551234, 22);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --INSERT rows into ORDER_jds
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (100, '24-JAN-2022', 'S100');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (101, '25-JAN-2022', 'A120');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (102, '25-JAN-2022', 'J090');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (103, '26-JAN-2022', 'B200');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (104, '26-JAN-2022', 'S100');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (105, '26-JAN-2022', 'B200');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (106, '27-JAN-2022', 'G070');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (107, '27-JAN-2022', 'J090');
+
+1 row created.
+
+SQL> INSERT INTO ORDER_jds
+  2  	     VALUES (108, '27-JAN-2022', 'S120');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --ORDERDETAIL
+SQL> --(100)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (100, 121, 2, 7.00);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (100, 228, 1, 65.00);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (100, 480, 4, 3.00);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (100, 407, 4, 4.25);
+
+1 row created.
+
+SQL> 
+SQL> --(101)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (101, 610, 200, 1.75);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (101, 618, 100, 1.25);
+
+1 row created.
+
+SQL> 
+SQL> --(102)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (102, 380, 2, 1.25);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (102, 121, 1, 7.00);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (102, 535, 4, 7.50);
+
+1 row created.
+
+SQL> 
+SQL> --(103)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (103, 121, 50, 7.00);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (103, 618, 100, 6.25);
+
+1 row created.
+
+SQL> 
+SQL> --(104)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (104, 229, 1, 50.00);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (104, 610, 200, 1.75);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (104, 380, 2, 1.25);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (104, 535, 4, 7.50);
+
+1 row created.
+
+SQL> 
+SQL> --(105)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (105, 610, 200, 1.75);
+
+1 row created.
+
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (105, 123, 40, 5.00);
+
+1 row created.
+
+SQL> 
+SQL> --(106)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (106, 124, 1, 6.50);
+
+1 row created.
+
+SQL> 
+SQL> --(107)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (107, 229, 1, 59.00);
+
+1 row created.
+
+SQL> 
+SQL> --(108)
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES (108, 235, 1, 65.00);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> -- COMMIT the data to save it to disk (COMMIT applies only to INSERT, UPDATE, and DELETE statements)
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --IIB. Retrive all data from each table
+SQL> SELECT * FROM PRODCAT_jds;
+
+ PRODCATID PRODCATNAME                                                          
+---------- --------------------                                                 
+         1 Hand Tools                                                           
+         2 Power Tools                                                          
+         4 Fasteners                                                            
+         6 Misc                                                                 
+         3 Measuring Tool                                                       
+         5 Hardware                                                             
+
+6 rows selected.
+
+SQL> SELECT * FROM COMMISSION_jds;
+
+C   COMMRATE                                                                    
+- ----------                                                                    
+A        .01                                                                    
+B        .08                                                                    
+Z          0                                                                    
+C        .05                                                                    
+
+SQL> SELECT * FROM DEPARTMENT_jds;
+
+    DEPTID DEPTNAME                                                             
+---------- ---------------                                                      
+        10 Store Sales                                                          
+        14 Corp Sales                                                           
+        16 Web Sales                                                            
+
+SQL> SELECT * FROM PRODUCT_jds;
+
+    PRODID PRODNAME              PRODCATID  PRODPRICE                           
+---------- -------------------- ---------- ----------                           
+       121 BD Hammer                     1          7                           
+       228 Makita Power Drill            2         65                           
+       480 1# BD Nails                   4          3                           
+       407 1# BD Screws                  4       4.25                           
+       610 3M Duct Tape                  6       1.75                           
+       618 3M Masking Tape               6       1.25                           
+       380 Acme Yard Stick               3       1.25                           
+       535 Schlage Door Knob             5        7.5                           
+       123 Acme Pry Bar                  1          5                           
+       124 Acme Hammer                   1        6.5                           
+       229 BD Power Drill                2         59                           
+
+    PRODID PRODNAME              PRODCATID  PRODPRICE                           
+---------- -------------------- ---------- ----------                           
+       235 Makita Power Drill 2          2         65                           
+
+12 rows selected.
+
+SQL> SELECT * FROM SALESREP_jds;
+
+SALESREPID SALESREPFNAME        SALESREPLNAME        C     DEPTID               
+---------- -------------------- -------------------- - ----------               
+        10 Alice                Jones                A         10               
+        12 Greg                 Taylor               B         14               
+        14 Sara                 Day                  Z         10               
+         8 Kay                  Price                C         14               
+        20 Bob                  Jackson              B         10               
+        22 Micah                Moore                Z         16               
+
+6 rows selected.
+
+SQL> SELECT * FROM CUSTOMER_jds;
+
+CUST CUSTFNAME  CUSTLNAME  CUSTPHONE  SALESREPID                                
+---- ---------- ---------- ---------- ----------                                
+S100 John       Smith      2145551212         10                                
+A120 Renee      Adams      8175553434         12                                
+J090 William    Jones                         14                                
+B200 Ann        Brown      9725557979          8                                
+G070 Kate       Green                         20                                
+S120 Wesley     Sims       2145551234         22                                
+
+6 rows selected.
+
+SQL> SELECT * FROM ORDER_jds;
+
+   ORDERID ORDERDATE CUST                                                       
+---------- --------- ----                                                       
+       100 24-JAN-22 S100                                                       
+       101 25-JAN-22 A120                                                       
+       102 25-JAN-22 J090                                                       
+       103 26-JAN-22 B200                                                       
+       104 26-JAN-22 S100                                                       
+       105 26-JAN-22 B200                                                       
+       106 27-JAN-22 G070                                                       
+       107 27-JAN-22 J090                                                       
+       108 27-JAN-22 S120                                                       
+
+9 rows selected.
+
+SQL> SELECT * FROM ORDERDETAIL_jds;
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       100        121          2          7                                     
+       100        228          1         65                                     
+       100        480          4          3                                     
+       100        407          4       4.25                                     
+       101        610        200       1.75                                     
+       101        618        100       1.25                                     
+       102        380          2       1.25                                     
+       102        121          1          7                                     
+       102        535          4        7.5                                     
+       103        121         50          7                                     
+       103        618        100       6.25                                     
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       104        229          1         50                                     
+       104        610        200       1.75                                     
+       104        380          2       1.25                                     
+       104        535          4        7.5                                     
+       105        610        200       1.75                                     
+       105        123         40          5                                     
+       106        124          1        6.5                                     
+       107        229          1         59                                     
+       108        235          1         65                                     
+
+20 rows selected.
+
+SQL> 
+SQL> --III.
+SQL> /*change the CUSTOMER phone from  B200 to 2145551234 AND
+SQL> Add Customer G119 (Amanda Green, no phone number), SalesRep 14
+SQL> */
+SQL> --CUSTOMER
+SQL> UPDATE CUSTOMER_jds
+  2    SET CustPhone= '2145551234'
+  3   WHERE CustID= 'B200';
+
+1 row updated.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_jds
+  2   VALUES(CustID, CustFName, CustLName, CustPhone, SalesRepID)
+  3   VALUES('G119', 'Amanda', 'Green', NULL, 14)
+  4  
+SQL> --ORDER
+SQL> UPDATE ORDER_jds
+  2    SET OrderDate= '28-JAN-2022'
+  3   WHERE OrderDate= 108
+  4  
+SQL> INSERT INTO ORDER_jds
+  2   VALUES(OrderID, OrderDate, CustID)
+  3   VALUES(109, '28-JAN-2022', 'G119')
+  4  
+SQL> --ORDERDETAIL
+SQL> UPDATE ORDERDETAIL_jds
+  2    SET ProdPrice= 62.00
+  3   WHERE ProdID = 235 AND OrderID = 108
+  4  
+SQL> 
+SQL> --Order 108
+SQL> INSERT INTO ORDERDETAIL_jds
+  2  	     VALUES(ProdID, ProdQty, ProdPrice)
+  3  	     VALUES(407, 1, 5.25)
+  4  	     VALUES(618, 2, 2.15)
+  5   WHERE ORDERDETAIL_jds=108
+  6  
+SQL> --Order 109
+SQL> INSERT INTO ORDERDETAIL_jds
+  2    VALUES(ProdID, ProdQty, ProdPrice)
+  3    VALUES(121, 1, 8.25)
+  4    VALUES(480, 1, 3.75)
+  5   WHERE ORDERDETAIL_jds= 109
+  6  
+SQL> --Write these changes to disk
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> 
+SQL> --IV. Retrive all data from each table, sorting by the primary key
+SQL> 
+SQL> -- ORDER BY PRODCAT ;
+SQL> SELECT * FROM PRODCAT_jds
+  2   ORDER BY ProdCatID ;
+
+ PRODCATID PRODCATNAME                                                          
+---------- --------------------                                                 
+         1 Hand Tools                                                           
+         2 Power Tools                                                          
+         3 Measuring Tool                                                       
+         4 Fasteners                                                            
+         5 Hardware                                                             
+         6 Misc                                                                 
+
+6 rows selected.
+
+SQL> 
+SQL> -- ORDER BY COMMISSION ;
+SQL> SELECT * FROM COMMISSION_jds
+  2   ORDER BY CommClass ;
+
+C   COMMRATE                                                                    
+- ----------                                                                    
+A        .01                                                                    
+B        .08                                                                    
+C        .05                                                                    
+Z          0                                                                    
+
+SQL> 
+SQL> 
+SQL> SELECT * FROM DEPARTMENT_jds
+  2   ORDER BY DeptID ;
+
+    DEPTID DEPTNAME                                                             
+---------- ---------------                                                      
+        10 Store Sales                                                          
+        14 Corp Sales                                                           
+        16 Web Sales                                                            
+
+SQL> 
+SQL> 
+SQL> SELECT * FROM PRODUCT_jds
+  2   ORDER BY ProdID ;
+
+    PRODID PRODNAME              PRODCATID  PRODPRICE                           
+---------- -------------------- ---------- ----------                           
+       121 BD Hammer                     1          7                           
+       123 Acme Pry Bar                  1          5                           
+       124 Acme Hammer                   1        6.5                           
+       228 Makita Power Drill            2         65                           
+       229 BD Power Drill                2         59                           
+       235 Makita Power Drill 2          2         65                           
+       380 Acme Yard Stick               3       1.25                           
+       407 1# BD Screws                  4       4.25                           
+       480 1# BD Nails                   4          3                           
+       535 Schlage Door Knob             5        7.5                           
+       610 3M Duct Tape                  6       1.75                           
+
+    PRODID PRODNAME              PRODCATID  PRODPRICE                           
+---------- -------------------- ---------- ----------                           
+       618 3M Masking Tape               6       1.25                           
+
+12 rows selected.
+
+SQL> 
+SQL> 
+SQL> SELECT * FROM SALESREP_jds
+  2   ORDER BY SalesRepID ;
+
+SALESREPID SALESREPFNAME        SALESREPLNAME        C     DEPTID               
+---------- -------------------- -------------------- - ----------               
+         8 Kay                  Price                C         14               
+        10 Alice                Jones                A         10               
+        12 Greg                 Taylor               B         14               
+        14 Sara                 Day                  Z         10               
+        20 Bob                  Jackson              B         10               
+        22 Micah                Moore                Z         16               
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> SELECT * FROM CUSTOMER_jds
+  2   ORDER BY CustID ;
+
+CUST CUSTFNAME  CUSTLNAME  CUSTPHONE  SALESREPID                                
+---- ---------- ---------- ---------- ----------                                
+A120 Renee      Adams      8175553434         12                                
+B200 Ann        Brown      2145551234          8                                
+G070 Kate       Green                         20                                
+J090 William    Jones                         14                                
+S100 John       Smith      2145551212         10                                
+S120 Wesley     Sims       2145551234         22                                
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> SELECT * FROM ORDER_jds
+  2   ORDER BY OrderID ;
+
+   ORDERID ORDERDATE CUST                                                       
+---------- --------- ----                                                       
+       100 24-JAN-22 S100                                                       
+       101 25-JAN-22 A120                                                       
+       102 25-JAN-22 J090                                                       
+       103 26-JAN-22 B200                                                       
+       104 26-JAN-22 S100                                                       
+       105 26-JAN-22 B200                                                       
+       106 27-JAN-22 G070                                                       
+       107 27-JAN-22 J090                                                       
+       108 27-JAN-22 S120                                                       
+
+9 rows selected.
+
+SQL> 
+SQL> 
+SQL> SELECT * FROM ORDERDETAIL_jds
+  2   ORDER BY OrderID, ProdID ;
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       100        121          2          7                                     
+       100        228          1         65                                     
+       100        407          4       4.25                                     
+       100        480          4          3                                     
+       101        610        200       1.75                                     
+       101        618        100       1.25                                     
+       102        121          1          7                                     
+       102        380          2       1.25                                     
+       102        535          4        7.5                                     
+       103        121         50          7                                     
+       103        618        100       6.25                                     
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       104        229          1         50                                     
+       104        380          2       1.25                                     
+       104        535          4        7.5                                     
+       104        610        200       1.75                                     
+       105        123         40          5                                     
+       105        610        200       1.75                                     
+       106        124          1        6.5                                     
+       107        229          1         59                                     
+       108        235          1         65                                     
+
+20 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --stop logging to the output command
+SQL> set echo off
